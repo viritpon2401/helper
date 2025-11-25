@@ -79,6 +79,7 @@ Body Example:
   "longitude": 100.5018,
   "accuracy": 10,
   "googleMapsUrl": "https://www.google.com/maps?q=13.7563,100.5018",
+  "phoneNumber": "0812345678",
   "adults": 2,
   "children": 1,
   "patients": 0,
@@ -112,6 +113,7 @@ function createHeaders(sheet) {
     'Longitude',
     'ความแม่นยำ (เมตร)',
     'Google Maps Link',
+    'เบอร์มือถือ',
     'ผู้ใหญ่',
     'เด็ก',
     'ผู้ป่วย/ผู้สูงอายุ',
@@ -139,14 +141,15 @@ function createHeaders(sheet) {
   sheet.setColumnWidth(4, 100);  // Longitude
   sheet.setColumnWidth(5, 120);  // ความแม่นยำ
   sheet.setColumnWidth(6, 200);  // Google Maps Link
-  sheet.setColumnWidth(7, 80);   // ผู้ใหญ่
-  sheet.setColumnWidth(8, 80);   // เด็ก
-  sheet.setColumnWidth(9, 120);  // ผู้ป่วย
-  sheet.setColumnWidth(10, 100); // รวม
-  sheet.setColumnWidth(11, 250); // ข้อมูลเพิ่มเติม
-  sheet.setColumnWidth(12, 120); // สถานะ
-  sheet.setColumnWidth(13, 200); // หมายเหตุ
-  sheet.setColumnWidth(14, 150); // User Agent
+  sheet.setColumnWidth(7, 120);  // เบอร์มือถือ
+  sheet.setColumnWidth(8, 80);   // ผู้ใหญ่
+  sheet.setColumnWidth(9, 80);   // เด็ก
+  sheet.setColumnWidth(10, 120); // ผู้ป่วย
+  sheet.setColumnWidth(11, 100); // รวม
+  sheet.setColumnWidth(12, 250); // ข้อมูลเพิ่มเติม
+  sheet.setColumnWidth(13, 120); // สถานะ
+  sheet.setColumnWidth(14, 200); // หมายเหตุ
+  sheet.setColumnWidth(15, 150); // User Agent
 
   // Freeze header row
   sheet.setFrozenRows(1);
@@ -174,6 +177,7 @@ function addNewRow(sheet, data) {
     data.longitude,                   // Longitude
     Math.round(data.accuracy),        // ความแม่นยำ
     mapsLink,                         // Google Maps Link
+    data.phoneNumber || '-',          // เบอร์มือถือ
     data.adults || 0,                 // ผู้ใหญ่
     data.children || 0,               // เด็ก
     data.patients || 0,               // ผู้ป่วย
@@ -197,7 +201,7 @@ function addNewRow(sheet, data) {
 
   // Format ตัวเลข
   sheet.getRange(rowNumber, 3, 1, 2).setNumberFormat('0.000000'); // Lat/Lng
-  sheet.getRange(rowNumber, 7, 1, 4).setNumberFormat('0');        // จำนวนคน
+  sheet.getRange(rowNumber, 8, 1, 4).setNumberFormat('0');        // จำนวนคน
 
   // Highlight แถวใหม่ชั่วคราว (จะหายใน 1 นาที)
   newRowRange.setBackground('#fef2f2');
@@ -223,6 +227,8 @@ function sendNotification(data, requestNumber) {
 วันที่/เวลา: ${data.timestamp}
 ตำแหน่ง: ${data.latitude}, ${data.longitude}
 Google Maps: ${data.googleMapsUrl}
+
+ผู้ติดต่อ: ${data.phoneNumber}
 
 จำนวนผู้ประสบภัย:
 - ผู้ใหญ่: ${data.adults} คน
@@ -250,6 +256,7 @@ function testAddSampleData() {
     longitude: 100.5018,
     accuracy: 10,
     googleMapsUrl: 'https://www.google.com/maps?q=13.7563,100.5018',
+    phoneNumber: '0812345678',
     adults: 2,
     children: 1,
     patients: 0,

@@ -1,6 +1,6 @@
 // Configuration - ใส่ Google Apps Script Web App URL ของคุณที่นี่
 const CONFIG = {
-    GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzBJ2r_IP6BmHMT8h4hU69ImwDXbWCwXRxzsfy_Txob5oNVwMRgYLAy6vLlfOJpQGHS/exec',
+    GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbz6wNUZZukYjd8wOvKEmK0p8o54U5JnFn2Y-R86XDYCxizMQaBK0PUL_oI3b803u14V/exec',
     // ตัวอย่าง: 'https://script.google.com/macros/s/AKfycbxxx.../exec'
 };
 
@@ -25,6 +25,7 @@ const elements = {
     adultsInput: document.getElementById('adults'),
     childrenInput: document.getElementById('children'),
     patientsInput: document.getElementById('patients'),
+    phoneNumber: document.getElementById('phoneNumber'),
     totalCount: document.getElementById('totalCount'),
     additionalInfo: document.getElementById('additionalInfo'),
     alertBox: document.getElementById('alertBox'),
@@ -182,9 +183,25 @@ async function handleSubmit(e) {
     const children = parseInt(elements.childrenInput.value) || 0;
     const patients = parseInt(elements.patientsInput.value) || 0;
     const total = adults + children + patients;
+    const phoneNumber = elements.phoneNumber.value.trim();
 
     if (total === 0) {
         showAlert('error', 'กรุณาระบุจำนวนผู้ต้องการความช่วยเหลืออย่างน้อย 1 คน');
+        return;
+    }
+
+    // Validate phone number
+    if (!phoneNumber) {
+        showAlert('error', 'กรุณากรอกเบอร์มือถือเพื่อให้ทีมกู้ภัยติดต่อกลับได้');
+        elements.phoneNumber.focus();
+        return;
+    }
+
+    // Validate phone number format (Thai phone number)
+    const phoneRegex = /^[0-9]{9,10}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+        showAlert('error', 'กรุณากรอกเบอร์มือถือให้ถูกต้อง (9-10 หลัก)');
+        elements.phoneNumber.focus();
         return;
     }
 
@@ -199,6 +216,7 @@ async function handleSubmit(e) {
         longitude: userLocation.longitude,
         accuracy: userLocation.accuracy,
         googleMapsUrl: `https://www.google.com/maps?q=${userLocation.latitude},${userLocation.longitude}`,
+        phoneNumber: phoneNumber,
         adults: adults,
         children: children,
         patients: patients,
