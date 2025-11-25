@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#dc2626">
+    <title>ขอความช่วยเหลือ - สถานการณ์น้ำท่วม</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 24px;
+        }
+
+        .alert {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert.success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .alert.error {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .alert-text {
+            font-size: 14px;
+            color: #991b1b;
+            line-height: 1.6;
+        }
+
+        .alert.success .alert-text {
+            color: #166534;
+        }
+
+        .location-section {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .location-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .location-status {
+            text-align: center;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .location-info {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 12px;
+            color: #475569;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .location-info.show {
+            display: block;
+        }
+
+        .location-coords {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+        }
+
+        .coord-item {
+            flex: 1;
+        }
+
+        .coord-label {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.show {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+        }
+
+        .input-group:focus-within {
+            border-color: #dc2626;
+            background: white;
+        }
+
+        .input-label {
+            font-size: 14px;
+            color: #64748b;
+            min-width: 80px;
+        }
+
+        .input-number {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            text-align: center;
+            outline: none;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+
+        .input-number::-webkit-inner-spin-button,
+        .input-number::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-counter {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #e2e8f0;
+            color: #475569;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-counter:active {
+            transform: scale(0.95);
+        }
+
+        .btn-counter:hover {
+            background: #cbd5e1;
+        }
+
+        .optional-section {
+            background: #fef9c3;
+            border: 2px dashed #fde047;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .optional-label {
+            font-size: 12px;
+            color: #854d0e;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 2px solid #fde047;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            background: white;
+        }
+
+        .textarea:focus {
+            outline: none;
+            border-color: #facc15;
+        }
+
+        .submit-section {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-back {
+            flex: 0 0 80px;
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-submit {
+            flex: 1;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .summary {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 14px;
+        }
+
+        .total-count {
+            background: #dc2626;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 16px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        /* PWA Install Prompt */
+        .install-prompt {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e293b;
+            color: white;
+            padding: 16px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.2);
+        }
+
+        .install-prompt.show {
+            display: flex;
+        }
+
+        .install-prompt button {
+            padding: 8px 16px;
+            background: white;
+            color: #1e293b;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                border-radius: 0;
+                min-height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🆘 ขอความช่วยเหลือ</h1>
+            <p>สถานการณ์น้ำท่วม - ระบบส่งตำแหน่งอัตโนมัติ</p>
+        </div>
+
+        <div class="content">
+            <!-- Alert Messages -->
+            <div id="alertBox" class="alert">
+                <div class="alert-text" id="alertText"></div>
+            </div>
+
+            <!-- Step 1: Location -->
+            <div id="step1" class="step-section">
+                <div class="location-section">
+                    <div class="location-icon">📍</div>
+                    <div class="location-status" id="locationStatus">
+                        กดปุ่มด้านล่างเพื่อส่งตำแหน่งของคุณ
+                    </div>
+                    <button class="btn btn-primary" id="getLocationBtn">
+                        <span id="btnText">🎯 ส่งตำแหน่งของฉัน</span>
+                    </button>
+                    <div class="location-info" id="locationInfo">
+                        <div style="font-weight: 600; margin-bottom: 8px;">📍 ตำแหน่งของคุณ:</div>
+                        <div class="location-coords">
+                            <div class="coord-item">
+                                <div class="coord-label">Latitude:</div>
+                                <div id="latValue">-</div>
+                            </div>
+                            <div class="coord-item">
+                                <div class="coord-label">Longitude:</div>
+                                <div id="lngValue">-</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 8px;">
+                            <div class="coord-label">ความแม่นยำ:</div>
+                            <div id="accuracyValue">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Form -->
+            <div id="step2" class="form-section">
+                <div class="summary">
+                    <div class="summary-item">
+                        <span class="summary-label">📍 ตำแหน่ง:</span>
+                        <span class="summary-value" style="color: #16a34a;">✓ ตรวจจับแล้ว</span>
+                    </div>
+                </div>
+
+                <h2 style="font-size: 18px; margin-bottom: 20px; color: #1e293b;">
+                    จำนวนผู้ต้องการความช่วยเหลือ
+                </h2>
+
+                <form id="helpForm">
+                    <div class="form-group">
+                        <label class="form-label">👨‍👩‍👧‍👦 ผู้ใหญ่</label>
+                        <div class="input-group">
+                            <span class="input-label">จำนวน:</span>
+                            <input type="number" id="adults" class="input-number" value="0" min="0" max="999" readonly>
+                            <div class="btn-group">
+                                <button type="button" class="btn-counter" onclick="decrementValue('adults')">−</button>
+                                <button type="button" class="btn-counter" onclick="incrementValue('adults')">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">👶 เด็ก</label>
+                        <div class="input-group">
+                            <span class="input-label">จำนวน:</span>
+                            <input type="number" id="children" class="input-number" value="0" min="0" max="999" readonly>
+                            <div class="btn-group">
+                                <button type="button" class="btn-counter" onclick="decrementValue('children')">−</button>
+                                <button type="button" class="btn-counter" onclick="incrementValue('children')">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">🏥 ผู้ป่วย / ผู้สูงอายุ</label>
+                        <div class="input-group">
+                            <span class="input-label">จำนวน:</span>
+                            <input type="number" id="patients" class="input-number" value="0" min="0" max="999" readonly>
+                            <div class="btn-group">
+                                <button type="button" class="btn-counter" onclick="decrementValue('patients')">−</button>
+                                <button type="button" class="btn-counter" onclick="incrementValue('patients')">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="optional-section">
+                        <div class="optional-label">📝 ข้อมูลเพิ่มเติม (ไม่บังคับ)</div>
+                        <textarea
+                            id="additionalInfo"
+                            class="textarea"
+                            placeholder="เช่น มีผู้ป่วยติดเตียง, มีสัตว์เลี้ยง, ต้องการน้ำดื่ม, ต้องการยา ฯลฯ"
+                            maxlength="500"
+                        ></textarea>
+                    </div>
+
+                    <div class="summary">
+                        <div class="summary-item">
+                            <span class="summary-label">รวมจำนวนผู้ประสบภัย:</span>
+                            <span class="total-count" id="totalCount">0 คน</span>
+                        </div>
+                    </div>
+
+                    <div class="submit-section">
+                        <button type="button" class="btn btn-back" id="backBtn">← กลับ</button>
+                        <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
+                            <span id="submitBtnText">📤 ส่งคำขอความช่วยเหลือ</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer">
+            ระบบช่วยเหลือสถานการณ์น้ำท่วม<br>
+            ข้อมูลจะถูกส่งไปยังทีมกู้ภัยทันที
+        </div>
+    </div>
+
+    <!-- PWA Install Prompt -->
+    <div class="install-prompt" id="installPrompt">
+        <div>
+            <div style="font-weight: 600;">ติดตั้งแอปพลิเคชัน</div>
+            <div style="font-size: 12px; opacity: 0.8;">ใช้งานได้แม้ไม่มีสัญญาณอินเทอร์เน็ต</div>
+        </div>
+        <div>
+            <button id="installBtn">ติดตั้ง</button>
+            <button id="dismissBtn" style="background: transparent; color: white; margin-left: 8px;">ไม่ตอนนี้</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
