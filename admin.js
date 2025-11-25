@@ -149,7 +149,7 @@ function renderTable(data) {
         return `
             <tr data-id="${item.requestNumber}">
                 <td><strong>#${item.requestNumber}</strong></td>
-                <td style="white-space: nowrap;">${item.timestamp || '-'}</td>
+                <td style="white-space: nowrap;">${formatThaiDateTime(item.timestamp)}</td>
                 <td>
                     <a href="${item.googleMapsUrl}" target="_blank" class="link-maps">
                         📍 ดูแผนที่
@@ -181,7 +181,7 @@ function renderTable(data) {
                     ${isClaimed ? `
                         <div class="claimed-by">
                             👤 ${isClaimedByMe ? 'คุณ' : 'ผู้อื่น'}
-                            ${item.claimedAt ? '<br>' + new Date(item.claimedAt).toLocaleString('th-TH') : ''}
+                            ${item.claimedAt ? '<br>' + formatThaiDateTime(item.claimedAt) : ''}
                         </div>
                     ` : ''}
                 </td>
@@ -224,6 +224,45 @@ function renderEmptyState(message) {
             </td>
         </tr>
     `;
+}
+
+// Format timestamp to Thai locale
+function formatThaiDateTime(timestamp) {
+    if (!timestamp || timestamp === '-') return '-';
+
+    try {
+        // Parse the timestamp
+        let date;
+        if (timestamp.includes('T')) {
+            // ISO format: 2568-11-25T04:25:14.000Z
+            date = new Date(timestamp);
+        } else if (timestamp.includes('/')) {
+            // Already Thai format: 25/11/2568 11:25:14
+            return timestamp;
+        } else {
+            date = new Date(timestamp);
+        }
+
+        // Check if date is valid
+        if (isNaN(date.getTime())) {
+            return timestamp;
+        }
+
+        // Format to Thai locale
+        return date.toLocaleString('th-TH', {
+            timeZone: 'Asia/Bangkok',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+    } catch (error) {
+        console.error('Date formatting error:', error);
+        return timestamp;
+    }
 }
 
 // Get status text
