@@ -1,6 +1,6 @@
 // Configuration - ใส่ Google Apps Script Web App URL ของคุณที่นี่
 const CONFIG = {
-    GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbz6wNUZZukYjd8wOvKEmK0p8o54U5JnFn2Y-R86XDYCxizMQaBK0PUL_oI3b803u14V/exec',
+    GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyf-VIeKrWnYOZw1UEsbCh3KjWoIkSiSbiCivAorOAQ9tpZa5YilJ_kswb3nLNvr2fB/exec',
     // ตัวอย่าง: 'https://script.google.com/macros/s/AKfycbxxx.../exec'
 };
 
