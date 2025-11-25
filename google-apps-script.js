@@ -1,5 +1,5 @@
 /**
- * Google Apps Script สำหรับรับข้อมูลจาก Web Application
+ * Google Apps Script สำหรับรับข้อมูลจาก Web Application 
  * และบันทึกลง Google Sheets
  *
  * วิธีการติดตั้ง:
@@ -15,7 +15,7 @@
  */
 
 // ===== การตั้งค่า =====
-const SHEET_ID = '1QTUesu1-VzjymPDbRK_inT6206xhmkFwCQiQEPZU76c'; // ใส่ Sheet ID ของคุณที่นี่
+const SHEET_ID = '1tJI9sIU83n6A-WpGs2DablfpTIE6b9kOMSk4CiMyxJI'; // ใส่ Sheet ID ของคุณที่นี่
 // ตัวอย่าง: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'
 // หา Sheet ID ได้จาก URL: https://docs.google.com/spreadsheets/d/{SHEET_ID}/edit
 

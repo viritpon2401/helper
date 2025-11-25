@@ -1,6 +1,6 @@
-// Configuration
+// Configuration 
 const CONFIG = {
-    GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyf-VIeKrWnYOZw1UEsbCh3KjWoIkSiSbiCivAorOAQ9tpZa5YilJ_kswb3nLNvr2fB/exec',
+    GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxRQWXsxd0Lm53IFTi_b9uN6m4JIdQ3nl1DhuSO9GszVQPp25pG8xcd9wFlOTi6_jvM_A/exec',
     AUTO_REFRESH_INTERVAL: 30000, // 30 seconds
     CLAIM_TIMEOUT: 1800000 // 30 minutes
 };
